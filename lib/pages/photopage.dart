@@ -1,9 +1,12 @@
+
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/services.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+
 
 class PhotoPage extends StatefulWidget{
   PhotoPage({Key key}) : super(key: key);
@@ -92,6 +95,11 @@ class _PhotoPageState extends State<PhotoPage> {
     }
   }
 */
+
+
+
+
+
   _takenPhoto() async{    /*  拍照*/
     var image = await ImagePicker.pickImage(source: ImageSource.camera);
     setState(() {
@@ -113,20 +121,20 @@ class _PhotoPageState extends State<PhotoPage> {
 
     String path = image.path;
     var name=path.substring(path.lastIndexOf("/")+1,path.length);
+    print("开始上传。。。。。。。。。。。。。。。。。。。。。。。。");
+    print(name);
 
-    FormData formdata = FormData.fromMap({
-      "file": await MultipartFile.fromFile(path, filename:name)
+
+    FormData formdata = new FormData.fromMap ({
+      "pics": await MultipartFile.fromFile(path, filename:name)
+      //"file"
     });
 
-    Response response;
-
-    var datas={
-      "pics": formdata
-    };
 
     Dio dio =new Dio();
-     response =await Dio().post("http://zjuqifengle.uicp.top/pics/new",
-                                  queryParameters: datas);
+    Response  response =await Dio().post("http://zjuqifengle.uicp.top/pics/new",
+      data: formdata,
+     );
     if(response.statusCode == 200){
       print( "图片上传成功");
     }
